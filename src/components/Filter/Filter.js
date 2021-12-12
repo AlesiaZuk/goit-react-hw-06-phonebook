@@ -1,8 +1,17 @@
-import PropTypes from 'prop-types';
-
 import s from './Filter.module.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { filterContact } from '../../redux/phonebook/phonebook-actions';
+import { getFilter } from '../../redux/phonebook/phonebook-selectors';
 
-function Filter({ filter, handleChange }) {
+function Filter() {
+  const dispatch = useDispatch();
+  const filter = useSelector(getFilter);
+
+  const handleChange = e => {
+    const { value } = e.target;
+    dispatch(filterContact(value));
+  };
+
   return (
     <label className={s.filter_label}>
       Find contacts by name:
@@ -20,10 +29,5 @@ function Filter({ filter, handleChange }) {
     </label>
   );
 }
-
-Filter.propTypes = {
-  filter: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired,
-};
 
 export default Filter;

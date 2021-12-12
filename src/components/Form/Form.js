@@ -1,28 +1,44 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact } from '../../redux/phonebook/phonebook-actions';
+import { getContacts } from '../../redux/phonebook/phonebook-selectors';
 
 import s from './Form.module.css';
 
-function Form({ handleAddContact }) {
+function Form() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
+
+  function handleAddContact({ name, number }) {
+    if (contacts.find(contact => contact.name === name)) {
+      alert(`${name} is already in contacts`);
+      return;
+    }
+    dispatch(addContact({ name, number }));
+  }
 
   const handleSubmit = e => {
     e.preventDefault();
 
     handleAddContact({ name, number });
+
     setName('');
     setNumber('');
   };
 
   const handleChange = e => {
-    switch (e.target.name) {
+    const { name, value } = e.target;
+
+    switch (name) {
       case 'name':
-        setName(e.target.value);
+        setName(value);
         break;
 
       case 'number':
-        setNumber(e.target.value);
+        setNumber(value);
         break;
 
       default:
@@ -68,9 +84,5 @@ function Form({ handleAddContact }) {
     </form>
   );
 }
-
-Form.propTypes = {
-  handleAddContact: PropTypes.func.isRequired,
-};
 
 export default Form;
